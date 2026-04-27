@@ -165,7 +165,6 @@ class ActionDecoder(nn.Module):
         return action_prediction
 
 
-
 @draccus.wrap()
 def eval_libero(cfg: GenerateConfig) -> None:
     assert cfg.pretrained_checkpoint is not None, "cfg.pretrained_checkpoint must not be None!"
@@ -181,9 +180,10 @@ def eval_libero(cfg: GenerateConfig) -> None:
 
     # Load action decoder
     action_decoder = ActionDecoder(cfg.window_size)
+    cfg.action_decoder_path = cfg.pretrained_checkpoint + "/action_decoder.pt"
     action_decoder.net.load_state_dict(torch.load(cfg.action_decoder_path))
     action_decoder.eval().cuda()
-
+    
     # Load model
     model = get_model(cfg)
 
@@ -394,7 +394,6 @@ def eval_libero(cfg: GenerateConfig) -> None:
             }
         )
         wandb.save(local_log_filepath)
-
 
 if __name__ == "__main__":
     eval_libero()
